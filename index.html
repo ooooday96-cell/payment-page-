@@ -2,91 +2,124 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>موقع كشف النصابين</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>كشف نصابين</title>
     <style>
-        body { background: #121212; color: #fff; font-family: sans-serif; text-align: center; padding: 15px; }
-        .box { background: #1e1e1e; padding: 20px; border-radius: 12px; margin: 15px auto; width: 100%; max-width: 400px; box-sizing: border-box; }
-        input, textarea, button { width: 100%; margin: 8px 0; padding: 12px; border-radius: 8px; border: none; box-sizing: border-box; font-size: 16px; }
-        button { cursor: pointer; color: white; background: #28a745; font-weight: bold; }
-        .footer { font-size: 12px; color: #888; margin-bottom: 10px; }
+        body { font-family: sans-serif; text-align: center; background: #eef2f3; padding: 10px; margin: 0; }
+        .container { background: white; padding: 15px; border-radius: 15px; width: 95%; max-width: 450px; margin: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.1); box-sizing: border-box; }
+        
+        .counter-box { background: #d9534f; color: white; padding: 5px; border-radius: 5px; margin: 10px 0; font-weight: bold; }
+        .about { background: #fff3cd; padding: 10px; border-radius: 8px; border: 1px solid #ffeeba; margin-bottom: 20px; font-size: 14px; color: #856404; }
+        
+        .search-container { margin: 20px 0; padding: 15px; background: #fff; border: 3px solid #d9534f; border-radius: 12px; }
+        .search-container input { width: 100%; padding: 15px; font-size: 18px; border: 2px solid #ccc; border-radius: 8px; box-sizing: border-box; }
+        
+        /* المنطقة التي ستعرض فيها البلاغات */
+        #display-area { margin-top: 15px; text-align: right; }
+        
+        input, textarea { display: block; width: 100%; margin: 10px auto; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        button { padding: 12px 20px; cursor: pointer; background: #d9534f; color: white; border: none; border-radius: 8px; margin: 5px; width: 100%; font-size: 16px; }
+        
+        .item { background: #f9f9f9; padding: 10px; margin-bottom: 10px; border-radius: 5px; border-right: 5px solid #d9534f; word-wrap: break-word; }
+        .admin-panel { display: none; margin-top: 20px; padding: 10px; background: #eee; border-radius: 8px; }
     </style>
 </head>
 <body>
-    <div class="footer">تم التصميم بواسطة بنات الاردن بزنس ©</div>
-    <h1>🔍 موقع كشف</h1>
 
-    <button onclick="showReports()" style="background:#ffc107; color:#000; width:100%; max-width:400px; padding:12px; border-radius:8px; border:none;">عرض البلاغات الموثقة</button>
-    <div id="reports-list" class="box" style="display:none; text-align:right;"></div>
+<div class="container">
+    <h1>كشف نصابين</h1>
+    
+    <div class="counter-box" id="visit-counter">عدد الزيارات: 0</div>
 
-    <div class="box">
-        <h3>البحث</h3>
-        <input type="text" id="searchPhone" placeholder="أدخل رقم الهاتف">
-        <button onclick="searchData()">بحث</button>
-        <div id="result"></div>
+    <div class="about">
+        هذا الموقع مخصص لكشف النصابين. يمكنك البحث من خلال الاسم أو الرقم للاطلاع على تجارب الآخرين وتجنب الوقوع في عمليات الاحتيال.
     </div>
 
-    <div class="box">
-        <h3>تقديم بلاغ</h3>
-        <input type="text" id="name" placeholder="اسم النصاب">
-        <input type="text" id="phone" placeholder="رقم النصاب">
-        <textarea id="notes" placeholder="تفاصيل النصب..."></textarea>
-        <button onclick="saveData()" style="background:#007bff;">إرسال للمراجعة</button>
+    <!-- خانة البحث -->
+    <div class="search-container">
+        <label style="color: #d9534f; font-weight: bold; display: block; margin-bottom: 8px;">🔍 ابحث عن اسم أو رقم:</label>
+        <input type="text" id="search-box" placeholder="اكتب هنا للبحث..." onkeyup="searchReport()">
+        
+        <!-- منطقة عرض البلاغات (سواء بحث أو عرض الكل) -->
+        <div id="display-area"></div>
     </div>
 
-    <div class="box">
-        <h3 id="admin-toggle" onclick="toggleAdmin()" style="cursor:pointer; color:#dc3545;">🔑 اضغط هنا لدخول الأدمن</h3>
-        <div id="admin-panel" style="display:none;">
-            <input type="text" id="adminUser" placeholder="اسم المستخدم">
-            <input type="password" id="adminPass" placeholder="كلمة السر">
-            <button onclick="checkAdmin()" style="background:#dc3545;">دخول</button>
-        </div>
+    <hr>
+    
+    <input type="text" id="name" placeholder="اسم الشخص">
+    <input type="tel" id="phone" placeholder="رقم الهاتف">
+    <textarea id="note" placeholder="كيف انتصب عليك؟" rows="3"></textarea>
+    <button onclick="addReport()">إضافة بلاغ</button>
+    
+    <button onclick="displayAllReports()" style="background:#5bc0de;">عرض كل البلاغات</button>
+
+    <div style="margin-top:20px;">
+        <button onclick="showAdmin()" style="background: #555;">لوحة تحكم الأدمن</button>
     </div>
+    <div id="admin-panel" class="admin-panel">
+        <input type="password" id="admin-pass" placeholder="كلمة سر الأدمن">
+        <button onclick="loginAdmin()">دخول</button>
+        <div id="admin-content"></div>
+    </div>
+</div>
 
-    <script>
-        // الكود البرمجي مدمج هنا لضمان عمله
-        function saveData() {
-            let reports = JSON.parse(localStorage.getItem('allReports') || "[]");
-            reports.push({ name: document.getElementById('name').value, phone: document.getElementById('phone').value, notes: document.getElementById('notes').value, status: 'pending' });
-            localStorage.setItem('allReports', JSON.stringify(reports));
-            alert("تم الإرسال للمراجعة!");
-        }
+<script>
+    let visits = localStorage.getItem('siteVisits') || 0;
+    visits = parseInt(visits) + 1;
+    localStorage.setItem('siteVisits', visits);
+    document.getElementById('visit-counter').innerText = "عدد الزيارات: " + visits;
 
-        function searchData() {
-            let phone = document.getElementById('searchPhone').value;
-            let reports = JSON.parse(localStorage.getItem('allReports') || "[]");
-            let res = reports.find(r => r.phone === phone && r.status === 'approved');
-            if (res) { document.getElementById('result').innerHTML = `<p style="color:#28a745;">تم العثور: ${res.name} - ${res.notes}</p>`; }
-            else { alert("لا يوجد بلاغ موثق لهذا الرقم."); }
-        }
+    let reports = JSON.parse(localStorage.getItem('reports')) || [];
+    let displayArea = document.getElementById('display-area');
 
-        function toggleAdmin() {
-            let panel = document.getElementById('admin-panel');
-            panel.style.display = (panel.style.display === "none") ? "block" : "none";
-        }
+    function addReport() {
+        let name = document.getElementById("name").value;
+        let phone = document.getElementById("phone").value;
+        let note = document.getElementById("note").value;
+        if(name && phone && note) {
+            reports.push({name, phone, note});
+            localStorage.setItem('reports', JSON.stringify(reports));
+            alert("تم إضافة البلاغ!");
+            location.reload();
+        } else { alert("يرجى ملء جميع الحقول"); }
+    }
 
-        function checkAdmin() {
-            if (document.getElementById('adminUser').value === "oday" && document.getElementById('adminPass').value === "oday1996oday") {
-                localStorage.setItem('isAdmin', 'true');
-                alert("تم دخول لوحة التحكم");
-            } else { alert("خطأ في البيانات"); }
-        }
+    function searchReport() {
+        let query = document.getElementById("search-box").value.toLowerCase();
+        displayArea.innerHTML = "";
+        if(query === "") return;
+        
+        let results = reports.filter(r => r.name.toLowerCase().includes(query) || r.phone.includes(query));
+        results.forEach(r => {
+            displayArea.innerHTML += `<div class='item'><b>${r.name}</b> (${r.phone})<br>${r.note}</div>`;
+        });
+    }
 
-        function showReports() {
-            let isAdmin = localStorage.getItem('isAdmin') === 'true';
-            document.getElementById('reports-list').style.display = 'block';
-            let reports = JSON.parse(localStorage.getItem('allReports') || "[]");
-            document.getElementById('reports-list').innerHTML = reports.map((r, i) => {
-                if (!isAdmin && r.status !== 'approved') return "";
-                return `<div style="border-bottom:1px solid #444; padding:10px;">${r.name} (${r.status}) ${isAdmin && r.status==='pending' ? `<button onclick="approve(${i})" style="padding:5px; background:green;">موافقة</button>` : ''}</div>`;
-            }).join('');
-        }
+    function displayAllReports() {
+        displayArea.innerHTML = "<h3>جميع البلاغات:</h3>";
+        reports.forEach(r => {
+            displayArea.innerHTML += `<div class='item'><b>${r.name}</b> (${r.phone})<br>${r.note}</div>`;
+        });
+    }
 
-        function approve(i) {
-            let r = JSON.parse(localStorage.getItem('allReports'));
-            r[i].status = 'approved';
-            localStorage.setItem('allReports', JSON.stringify(r));
-            showReports();
-        }
-    </script>
+    function showAdmin() { document.getElementById("admin-panel").style.display = "block"; }
+
+    function loginAdmin() {
+        let pass = document.getElementById("admin-pass").value;
+        if(pass === "oday1996oday") {
+            let content = document.getElementById("admin-content");
+            content.innerHTML = "<h3>حذف البلاغات:</h3>";
+            reports.forEach((r, index) => {
+                content.innerHTML += `<div class='item'>${r.name} <button onclick="deleteReport(${index})" style="background:red; width:auto;">حذف</button></div>`;
+            });
+        } else { alert("كلمة سر خاطئة"); }
+    }
+
+    function deleteReport(index) {
+        reports.splice(index, 1);
+        localStorage.setItem('reports', JSON.stringify(reports));
+        location.reload();
+    }
+</script>
 </body>
 </html>
